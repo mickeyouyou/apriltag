@@ -23,7 +23,7 @@ else()
     target_link_libraries(${PROJECT_NAME} Threads::Threads m)
 endif()
 
-set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION 3 VERSION 3.1.0)
+set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION 3 VERSION 3.1.0 C_STANDARD 11)
 
 include(GNUInstallDirs)
 target_include_directories(${PROJECT_NAME} PUBLIC
@@ -34,6 +34,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 set_target_properties(${PROJECT_NAME} PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_INSTALL_LIBDIR}
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_INSTALL_LIBDIR}
+    C_STANDARD 11
 )
 
 
@@ -79,14 +80,14 @@ add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/apriltag_${X}.docstring.h
     WORKING_DIRECTORY ${PROJECT_BINARY_DIR})
 endforeach()
 
-add_custom_command(OUTPUT apriltag_pywrap.o
-    COMMAND ${CMAKE_C_COMPILER} ${CMAKE_C_FLAGS} ${PY_CFLAGS} -I${PROJECT_BINARY_DIR} -c -o apriltag_pywrap.o ${CMAKE_SOURCE_DIR}/apriltag_pywrap.c
-    DEPENDS ${CMAKE_SOURCE_DIR}/apriltag_pywrap.c ${PROJECT_BINARY_DIR}/apriltag_detect.docstring.h ${PROJECT_BINARY_DIR}/apriltag_py_type.docstring.h)
-add_custom_command(OUTPUT apriltag${PY_EXT_SUFFIX}
-    COMMAND ${PY_LINKER} ${PY_LDFLAGS} -Wl,-rpath=lib apriltag_pywrap.o ${LIB_APRILTAG_PATH}/libapriltag.so -o apriltag${PY_EXT_SUFFIX}
-    DEPENDS ${PROJECT_NAME} apriltag_pywrap.o)
-add_custom_target(apriltag_python ALL
-    DEPENDS apriltag${PY_EXT_SUFFIX})
+#add_custom_command(OUTPUT apriltag_pywrap.o
+#    COMMAND ${CMAKE_C_COMPILER} ${CMAKE_C_FLAGS} ${PY_CFLAGS} -I${PROJECT_BINARY_DIR} -c -o #apriltag_pywrap.o ${CMAKE_SOURCE_DIR}/apriltag_pywrap.c
+#    DEPENDS ${CMAKE_SOURCE_DIR}/apriltag_pywrap.c ${PROJECT_BINARY_DIR}/apriltag_detect.docstring.h ${PROJECT_BINARY_DIR}/apriltag_py_type.docstring.h)
+#add_custom_command(OUTPUT apriltag${PY_EXT_SUFFIX}
+#    COMMAND ${PY_LINKER} ${PY_LDFLAGS} -Wl,-rpath=lib apriltag_pywrap.o ${LIB_APRILTAG_PATH}/libapriltag.so -o apriltag${PY_EXT_SUFFIX}
+#    DEPENDS ${PROJECT_NAME} apriltag_pywrap.o)
+#add_custom_target(apriltag_python ALL
+#    DEPENDS apriltag${PY_EXT_SUFFIX})
 
 execute_process(COMMAND python3 -m site --user-site OUTPUT_VARIABLE PY_DEST)
 string(STRIP ${PY_DEST} PY_DEST)
@@ -97,16 +98,16 @@ endif (NOT Python3_NOT_FOUND)
 
 # Examples
 # apriltag_demo
-add_executable(apriltag_demo example/apriltag_demo.c)
-target_link_libraries(apriltag_demo apriltag)
+#add_executable(apriltag_demo example/apriltag_demo.c)
+#target_link_libraries(apriltag_demo apriltag)
 
 # opencv_demo
-if(OpenCV_FOUND)
-    add_executable(opencv_demo example/opencv_demo.cc)
-    target_link_libraries(opencv_demo apriltag ${OpenCV_LIBRARIES})
-    install(TARGETS opencv_demo RUNTIME DESTINATION bin)
-endif(OpenCV_FOUND)
+#if(OpenCV_FOUND)
+#    add_executable(opencv_demo example/opencv_demo.cc)
+#    target_link_libraries(opencv_demo apriltag ${OpenCV_LIBRARIES})
+#    install(TARGETS opencv_demo RUNTIME DESTINATION bin)
+#endif(OpenCV_FOUND)
 
 # install example programs
-install(TARGETS apriltag_demo RUNTIME DESTINATION bin)
+#install(TARGETS apriltag_demo RUNTIME DESTINATION bin)
 
